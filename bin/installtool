@@ -1,0 +1,5 @@
+#!/system/bin/sh
+/system/bin/busybox mount -o remount rw /system
+/system/bin/toolbox install /system/bin
+
+

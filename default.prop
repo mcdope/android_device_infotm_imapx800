@@ -1,0 +1,19 @@
+#
+# ADDITIONAL_DEFAULT_PROPERTIES
+#
+
+ril.usbdongled.status=
+ril.usbdongled.at_port=
+ril.usbdongled.is_single_port=
+ril.usbdongled.connect=
+ril.usbdongled.imei=
+ril.usbdongled.imsi=
+ril.usbdongled.device_name=
+ril.usbdongled.company=
+ril.usbdongled.network_type
+ril.usbdongled.sim_stat=
+ril.usbdongled.network_mode=
+ril.usbdongled.signal=
+ril.usbdongled.permit_modem_id=
+ril.usbdongled.dialnumber=
+

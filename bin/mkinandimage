@@ -1,0 +1,96 @@
+#!/system/bin/sh
+#about args
+# $1  CHUCKSIZE 
+# $2  SPARESIZE
+# $3  UPDATEPATH where store bootanimation and initlogo; infofirmware/patch/
+# $4  DESTPATH where store images
+YAFFSIMGTOOL=/system/bin/mkyaffs2image 
+MKBOOTFS=/system/bin/mkbootfs
+GZIP=/system/bin/gzip
+BUSYBOX=/system/bin/busybox 
+MKIMAGE=/system/bin/mkimage
+E2FSCK=/system/bin/e2fsck
+MKEXTIMG=/system/bin/make_ext4fs
+TUNE2FS=/system/bin/tune2fs
+
+#ACP=/system/bin/acp
+
+UPDATEPATH=$1
+DESTDIR=$2
+INITLOGOPATH=$UPDATEPATH/logos/initlogo.rle
+BOOTANIMATION=$UPDATEPATH/logos/bootanimation.zip
+KERNELLOGO=$UPDATEPATH/logos/logo.isi
+WALLPAPER=$UPDATEPATH/wallpaper
+SKIN=$UPDATEPATH/skin
+APPS=/data/app
+ROOTDIR=/data/root
+SYSTEMDIR=$2
+
+$BUSYBOX mkdir -p $DESTDIR
+$BUSYBOX rm -fr $DESTDIR/*
+$BUSYBOX mkdir $ROOTDIR
+$BUSYBOX mkdir $ROOTDIR/dev
+$BUSYBOX mkdir $ROOTDIR/sys
+$BUSYBOX mkdir $ROOTDIR/system
+$BUSYBOX mkdir $ROOTDIR/data
+$BUSYBOX mkdir $ROOTDIR/proc
+$BUSYBOX cp -pdr /sbin $ROOTDIR/
+$BUSYBOX cp /init* $ROOTDIR/
+$BUSYBOX cp /ueventd* $ROOTDIR/
+$BUSYBOX cp /default.prop $ROOTDIR/
+$BUSYBOX cp -pdr /res $ROOTDIR/
+$BUSYBOX cp -p /charger $ROOTDIR/
+$BUSYBOX cp $INITLOGOPATH $ROOTDIR/
+$BUSYBOX chmod 777 $ROOTDIR/*
+
+$MKBOOTFS $ROOTDIR | gzip > /data/ramdisk.img.ori
+$MKIMAGE  -A arm -O linux -T ramdisk -C none -a 0x41000000 -n "hRamdisk" -d /data/ramdisk.img.ori $DESTDIR/ramdisk.img
+
+$BUSYBOX rm /data/ramdisk.img.ori
+$BUSYBOX rm -fr $ROOTDIR
+$BUSYBOX cp /system/etc/mmc.ixl $DESTDIR/bootdisk.ixl
+$BUSYBOX cp /system/etc/burninit.isi $DESTDIR/burninit.isi
+$BUSYBOX cp $KERNELLOGO $DESTDIR/
+$BUSYBOX rm -fr $SYSTEMDIR/system
+$BUSYBOX mkdir $SYSTEMDIR
+
+$BUSYBOX mkdir $DESTDIR/system
+
+$BUSYBOX dd if=/dev/zero of=$DESTDIR/system.img.ext4 bs=1024 count=1 seek=245759
+$MKEXTIMG $DESTDIR/system.img.ext4
+$BUSYBOX mount -o loop,rw -t ext4 $DESTDIR/system.img.ext4 $DESTDIR/system
+$BUSYBOX cp -a /system/* $SYSTEMDIR/system/
+
+$BUSYBOX cp $BOOTANIMATION $SYSTEMDIR/system/media/bootanimation.zip
+$BUSYBOX cp $APPS/*.apk $SYSTEMDIR/system/app/
+$BUSYBOX mkdir $SYSTEMDIR/system/etc/default_settings/
+$BUSYBOX mkdir $SYSTEMDIR/system/etc/default_desktop/
+$BUSYBOX mkdir $SYSTEMDIR/system/etc/default_desktop/.skin
+$BUSYBOX mkdir $SYSTEMDIR/system/etc/default_settings/wallpaper/
+$BUSYBOX cp $WALLPAPER/* $SYSTEMDIR/system/etc/default_settings/wallpaper/
+$BUSYBOX cp $SKIN/* $SYSTEMDIR/system/etc/default_desktop/.skin/
+$BUSYBOX cp $UPDATEPATH/system-settings $SYSTEMDIR/system/etc/default_settings/
+$BUSYBOX cp $UPDATEPATH/secure-settings $SYSTEMDIR/system/etc/default_settings/
+$BUSYBOX cp $UPDATEPATH/default_workspace.xml $SYSTEMDIR/system/etc/default_desktop/
+$BUSYBOX cp $UPDATEPATH/default_wea.xml $SYSTEMDIR/system/etc/default_desktop/
+$BUSYBOX cp $UPDATEPATH/shutdown* $SYSTEMDIR/system/etc/default_desktop/
+$BUSYBOX sed '/language/'d $SYSTEMDIR/system/build.prop | $BUSYBOX sed '/country/'d | $BUSYBOX sed '/timezone/'d | $BUSYBOX sed '/model/'d > $SYSTEMDIR/system/build.prop.bak
+$BUSYBOX cat $UPDATEPATH/lang >> $SYSTEMDIR/system/build.prop.bak
+$BUSYBOX mv $SYSTEMDIR/system/build.prop.bak $SYSTEMDIR/system/build.prop
+$BUSYBOX rm $SYSTEMDIR/system/app/*ImageTools*.apk
+$BUSYBOX rm $SYSTEMDIR/system/app/flash_player_20110406.apk
+
+$BUSYBOX umount $DESTDIR/system
+
+$TUNE2FS -L system $DESTDIR/system.img.ext4
+$TUNE2FS -C 1 $DESTDIR/system.img.ext4
+$BUSYBOX mv $DESTDIR/system.img.ext4 $DESTDIR/system.ext.img
+#$MKIMAGE -A arm -O linux -T filesystem -C none -a 40008000 -n "Android" -d $DESTDIR/system.img.ext4 $DESTDIR/system.img
+$BUSYBOX rm -fr $DESTDIR/system.img.ext4
+$BUSYBOX rm -fr $DESTDIR/data
+$BUSYBOX rm -fr $SYSTEMDIR/system
+$BUSYBOX rm -fr $UPDATEPATH/lang 
+$BUSYBOX rm -fr $UPDATEPATH/*settings
+$BUSYBOX rm -fr $UPDATEPATH/default_workspace.xml
+$BUSYBOX sync
+

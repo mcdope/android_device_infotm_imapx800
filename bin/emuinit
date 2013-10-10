@@ -1,0 +1,10 @@
+#!/system/bin/sh
+#/system/bin/busybox mkdir /emu
+#/system/bin/busybox mount -t yaffs /dev/block/mtdblock5 /emu
+#/system/bin/busybox losetup /dev/block/loop0 /emu/emu.disk
+#/system/bin/chmod 0666 /dev/ubi_ctrl
+#/system/bin/ubiattach /dev/ubi_ctrl -m 5
+
+/system/bin/atc5
+#mount -t ubifs /dev/ubi5_0 /system/emu
+#busybox losetup /dev/block/loop0 /emu/disk

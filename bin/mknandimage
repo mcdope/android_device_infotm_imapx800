@@ -1,0 +1,103 @@
+#!/system/bin/sh
+#about args
+# $1  CHUCKSIZE 
+# $2  SPARESIZE
+# $3  UPDATEPATH where store bootanimation and initlogo; infofirmware/patch/
+# $4  DESTPATH where store images
+YAFFSIMGTOOL=/system/bin/mkyaffs2image 
+MKBOOTFS=/system/bin/mkbootfs
+GZIP=/system/bin/gzip
+BUSYBOX=/system/bin/busybox 
+MKIMAGE=/system/bin/mkimage
+
+#CHUNCKSIZE=$1
+#SPARESIZE=$2
+
+DESTDIR=$2
+UPDATEPATH=$1
+USEWHICHIXL=$3
+
+#CHUNCKSIZE=$1
+#SPARESIZE=$2
+
+#DESTDIR=$4
+#UPDATEPATH=$3
+
+INITLOGOPATH=$UPDATEPATH/logos/initlogo.rle
+BOOTANIMATION=$UPDATEPATH/logos/bootanimation.zip
+KERNELLOGO=$UPDATEPATH/logos/logo.isi
+WALLPAPER=$UPDATEPATH/wallpaper
+SKIN=$UPDATEPATH/skin
+APPS=/data/app
+ROOTDIR=/data/root
+SYSTEMDIR=$2
+#$BUSYBOX mkdir -p $DESTDIR
+#$BUSYBOX rm -fr $DESTDIR/*
+#$BUSYBOX mkdir $ROOTDIR
+#$BUSYBOX mkdir $ROOTDIR/dev
+#$BUSYBOX mkdir $ROOTDIR/sys
+#$BUSYBOX mkdir $ROOTDIR/system
+#$BUSYBOX mkdir $ROOTDIR/data
+#$BUSYBOX mkdir $ROOTDIR/proc
+#$BUSYBOX cp -pdr /sbin $ROOTDIR/
+#$BUSYBOX cp /init* $ROOTDIR/
+#$BUSYBOX cp /ueventd* $ROOTDIR/
+#$BUSYBOX cp /default.prop $ROOTDIR/
+#$BUSYBOX cp -pdr /res $ROOTDIR/
+#$BUSYBOX cp -p /charger $ROOTDIR/
+#$BUSYBOX cp $INITLOGOPATH $ROOTDIR/
+#$BUSYBOX chmod 777 $ROOTDIR/*
+
+#$MKBOOTFS $ROOTDIR | gzip > /data/ramdisk.img.ori
+#$MKIMAGE  -A arm -O linux -T ramdisk -C none -a 0x41000000 -n "hRamdisk" -d /data/ramdisk.img.ori $DESTDIR/ramdisk.img
+#$BUSYBOX rm /data/ramdisk.img.ori
+#$BUSYBOX rm -fr $ROOTDIR
+
+mount -o remount rw /system
+$BUSYBOX cp /system/etc/$USEWHICHIXL $DESTDIR/bootdisk.ixl
+$BUSYBOX cp /system/etc/burninit.isi $DESTDIR/burninit.isi
+$BUSYBOX cp $KERNELLOGO $DESTDIR/
+$BUSYBOX rm -fr $SYSTEMDIR/system
+$BUSYBOX mkdir $SYSTEMDIR
+$BUSYBOX mkdir $SYSTEMDIR/system/
+$BUSYBOX mkdir $SYSTEMDIR/system/media
+$BUSYBOX mkdir $SYSTEMDIR/system/etc
+$BUSYBOX mkdir $SYSTEMDIR/system/app
+$BUSYBOX cp $BOOTANIMATION $SYSTEMDIR/system/media/bootanimation.zip
+for i in `ls /mnt/asec/`; do $BUSYBOX cp /mnt/asec/$i/pkg.apk $SYSTEMDIR/system/app/$i.apk; done
+$BUSYBOX cp $APPS/*.apk $SYSTEMDIR/system/app/
+$BUSYBOX mkdir system/etc/default_settings/
+$BUSYBOX mkdir system/etc/default_desktop/
+$BUSYBOX mkdir system/etc/default_desktop/.skin
+$BUSYBOX mkdir system/etc/default_settings/wallpaper/
+$BUSYBOX cp $WALLPAPER/* system/etc/default_settings/wallpaper/
+$BUSYBOX cp $SKIN/* system/etc/default_desktop/.skin/
+$BUSYBOX cp $UPDATEPATH/system-settings system/etc/default_settings/
+$BUSYBOX cp $UPDATEPATH/secure-settings system/etc/default_settings/
+$BUSYBOX cp $UPDATEPATH/default_workspace.xml system/etc/default_desktop/
+chmod -R 777 system/etc/default_settings
+chmod -R 777 system/etc/default_desktop
+#$BUSYBOX cp $UPDATEPATH/shutdown* $SYSTEMDIR/system/etc/default_desktop/
+$BUSYBOX cp system/build.prop $SYSTEMDIR/system/
+$BUSYBOX sed '/language/'d $SYSTEMDIR/system/build.prop | $BUSYBOX sed '/country/'d | $BUSYBOX sed '/timezone/'d | $BUSYBOX sed '/model/'d > $SYSTEMDIR/system/build.prop.bak
+$BUSYBOX sed '/\<board\.model/'d $DESTDIR/items.itm | $BUSYBOX sed '/items\.end/'d > $DESTDIR/items.itm.bak
+$BUSYBOX echo "board.model `$BUSYBOX grep "model" $UPDATEPATH/lang | $BUSYBOX cut -d'=' -f 2`" >> $DESTDIR/items.itm.bak
+$BUSYBOX echo "items.end" >> $DESTDIR/items.itm.bak
+
+$BUSYBOX mv  $DESTDIR/items.itm.bak $DESTDIR/items.itm
+$BUSYBOX cat $UPDATEPATH/lang >> $SYSTEMDIR/system/build.prop.bak
+$BUSYBOX cat $SYSTEMDIR/system/build.prop.bak > system/build.prop
+$BUSYBOX rm  $SYSTEMDIR/system/build.prop*
+$BUSYBOX rm $SYSTEMDIR/system/app/*ImageTools*.apk
+$BUSYBOX rm $SYSTEMDIR/system/app/*flashplayer*.apk
+$BUSYBOX rm $SYSTEMDIR/system/app/*googlequicksearchbox*.apk
+$BUSYBOX cp /system/bin/gzip /sbin/gzip
+cd $SYSTEMDIR/
+/system/bin/tar -zpcf $DESTDIR/system.yaffs.img /system `busybox find system -type f` --exclude=disk
+
+$BUSYBOX rm -fr $DESTDIR/data
+$BUSYBOX rm -fr $SYSTEMDIR/system
+$BUSYBOX rm -fr $UPDATEPATH/lang 
+$BUSYBOX rm -fr $UPDATEPATH/*settings
+$BUSYBOX rm -fr $UPDATEPATH/default_workspace.xml
+$BUSYBOX sync

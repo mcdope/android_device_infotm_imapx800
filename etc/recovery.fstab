@@ -1,0 +1,7 @@
+/boot mtd boot
+/cache yaffs2 cache
+/data yaffs2 userdata
+/misc mtd misc
+/recovery mtd resv
+/sdcard yaffs2 Local-disk
+/system yaffs2 system

@@ -1,0 +1,49 @@
+===================================================================================================
+         module           | version |    date    |  author  |   type   |          note            |
+===================================================================================================
+InfotmMediaFoundations    | v1.3.1  | 2012/06/07 | leo      | library  |                          |
+InfotmMediaIPC            | v1.0.2  | 2012/06/07 | leo      | library  |                          |
+InfotmMediaBuffalloc      | v1.2.5  | 2012/06/12 | leo      | library  |                          |
+InfotmMediaUtlzstatc      | v1.0.1  | 2012/06/07 | leo      | library  |                          |
+InfotmMediaAudioDec       | v1.1.0  | 2012/06/07 | eric     | library  |                          |
+InfotmMediaBlt            | v1.0.3  | 2012/07/04 | karst    | library  |                          |
+InfotmMediaG2D            | v1.0.3  | 2012/06/07 | arsor    | library  |                          |
+libUMP                    | v1.0.8  | 2012/06/15 | shaft    | library  |                          |
+libMali                   | v1.0.8  | 2012/06/15 | shaft    | library  |                          |
+libEGL_mali               | v1.0.8  | 2012/06/15 | shaft    | library  |                          |
+libGLESv1_CM_mali         | v1.0.8  | 2012/06/15 | shaft    | library  |                          |
+libGLESv2_CM_mali         | v1.0.8  | 2012/06/15 | shaft    | library  |                          |
+InfotmMediaIDS            | v1.0.5  | 2012/06/12 | sam      | library  |                          |
+InfotmMediaJpegDec        | v1.0.7  | 2012/06/07 | karst    | library  |                          |
+InfotmMediaJpegenc        | v1.2.1  | 2012/06/07 | rane     | library  |                          |
+InfotmMediaParser         | v1.1.0  | 2012/06/07 | eric     | library  |                          |
+InfotmMediaParserlib      | v1.1.1  | 2012/06/15 | eric     | library  |                          |
+InfotmMediaRefptr         | v1.0.1  | 2012/06/07 | leo      | library  |                          |
+libg1dec_avs              | v1.0.1  | 2012/06/07 | eric     | library  |                          |
+libg1dec_h264             | v1.0.1  | 2012/06/07 | eric     | library  |                          |
+libg1dec_mpeg2            | v1.0.1  | 2012/06/07 | eric     | library  |                          |
+libg1dec_pp               | v1.0.1  | 2012/06/07 | eric     | library  |                          |
+libg1dec_vc1              | v1.0.1  | 2012/06/07 | eric     | library  |                          |
+libg1dec_vp8              | v1.0.1  | 2012/06/07 | eric     | library  |                          |
+libg1dec_dwl              | v1.0.1  | 2012/06/07 | eric     | library  |                          |
+libg1dec_jpeg             | v1.0.1  | 2012/06/07 | eric     | library  |                          |
+libg1dec_mpeg4            | v1.0.1  | 2012/06/07 | eric     | library  |                          |
+libg1dec_rv               | v1.0.1  | 2012/06/07 | eric     | library  |                          |
+libg1dec_vp6              | v1.0.1  | 2012/06/07 | eric     | library  |                          |
+lib8270enc                | v1.0.1  | 2012/06/07 | rane     | library  |                          |
+InfotmMediaVideoDec       | v1.0.3  | 2012/06/07 | eric     | library  |                          |
+InfotmMediaVideoDec2      | v2.0.1  | 2012/06/15 | eric     | library  |                          |
+InfotmMediaVideoEnc       | v1.0.2  | 2012/06/07 | rane     | library  |                          |
+InfotmMediaImage          | v1.0.1  | 2012/06/07 | jimmy    | library  |                          |
+InfotmMediaCamera         | v2.0.2  | 2012/06/07 | arsor    | library  |                          |
+InfotmMediaCameralib_stub | v2.0.1  | 2012/06/07 | rane     | library  |                          |
+InfotmMediaCameralib_usb  | v2.0.1  | 2012/06/07 | rane     | library  |                          |
+InfotmMediaCameralib_isp  | v1.0.2  | 2012/06/07 | arsor    | library  |                          |
+libswscale                | v1.1.0  | 2012/07/07 | eric     | library  |                          |
+libavformat               | v1.1.0  | 2012/07/07 | eric     | library  |                          |
+libavcodec                | v1.1.0  | 2012/07/07 | eric     | library  |                          |
+libavutil                 | v1.1.0  | 2012/07/07 | eric     | library  |                          |
+                          |         |            |          |          |                          |
+                          |         |            |          |          |                          |
+                          |         |            |          |          |                          |
+===================================================================================================
